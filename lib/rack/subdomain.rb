@@ -3,6 +3,9 @@ module Rack
     VERSION = '0.1.0'
 
     def initialize(app, domain, options = {}, &block)
+      # Maintain compatibility with previous rack-subdomain gem
+      options = {to: options} if options.is_a? String
+
       @options = {except: ['', 'www']}.merge(options)
 
       @app = app
