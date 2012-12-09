@@ -4,7 +4,7 @@ require "rack-subdomain"
 
 Gem::Specification.new do |s|
   s.name        = "rack-subdomain"
-  s.authors     = ["Mattt Thompson"]
+  s.authors     = ["Mattt Thompson", "Piotr Sarnacki"]
   s.email       = "m@mattt.me"
   s.homepage    = "http://github.com/mattt/rack-subdomain"
   s.version     = Rack::Subdomain::VERSION
