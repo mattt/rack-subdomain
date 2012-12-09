@@ -1,6 +1,6 @@
 module Rack
   class Subdomain
-    VERSION = '0.2.0'
+    VERSION = '0.2.1'
 
     def initialize(app, domain, options = {}, &block)
       # Maintain compatibility with previous rack-subdomain gem
