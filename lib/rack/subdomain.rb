@@ -20,7 +20,7 @@ module Rack
         raise ArgumentError, "missing `:to` option or block to define mapping"
       end
     end
-    
+
     def call(env)
       @env = env
       @subdomain = subdomain
@@ -47,17 +47,18 @@ module Rack
       @mappings[regexp] = route
     end
 
+  private
+
     def domain
-      if @domain.respond_to?(:call)
+      case @domain
+      when Proc
         @domain.call(@env['HTTP_HOST'])
-      elsif @domain.respond_to?(:match)
+      when Regexp
         @domain.match(@env['HTTP_HOST'])
       else
         @domain
       end
     end
-
-  private
 
     def subdomain
       @env['HTTP_HOST'].sub(/\.?#{domain}.*$/,'') unless @env['HTTP_HOST'].match(/^localhost/)
