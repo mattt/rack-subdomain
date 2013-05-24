@@ -47,15 +47,25 @@ module Rack
       @mappings[regexp] = route
     end
 
+    def domain
+      if @domain.respond_to?(:call)
+        @domain.call(@env['HTTP_HOST'])
+      elsif @domain.respond_to?(:match)
+        @domain.match(@env['HTTP_HOST'])
+      else
+        @domain
+      end
+    end
+
   private
 
     def subdomain
-      @env['HTTP_HOST'].sub(/\.?#{@domain}.*$/,'') unless @env['HTTP_HOST'].match(/^localhost/)
+      @env['HTTP_HOST'].sub(/\.?#{domain}.*$/,'') unless @env['HTTP_HOST'].match(/^localhost/)
     end
 
     def remap_with_substituted_path!(path)
       scheme = @env["rack.url_scheme"]
-      host = "#{@subdomain}.#{@domain}"
+      host = "#{@subdomain}.#{domain}"
       port = ":#{@env['SERVER_PORT']}" unless @env['SERVER_PORT'] == '80'
       path = @env["PATH_INFO"] = ::File.join(path, @env["PATH_INFO"])
       query_string = "?" + @env["QUERY_STRING"] unless @env["QUERY_STRING"].empty?
