@@ -60,7 +60,7 @@ module Rack
   private
 
     def subdomain
-      @env['HTTP_HOST'].sub(/\.?#{domain}.*$/,'') unless @env['HTTP_HOST'].match(/^localhost/)
+      @env['HTTP_HOST'].sub(/\.?#{domain}.*$/,'') unless @env['HTTP_HOST'].match(/^localhost/) || @env['SERVER_NAME'] =~ /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/
     end
 
     def remap_with_substituted_path!(path)
