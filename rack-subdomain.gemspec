@@ -1,18 +1,19 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require "rack-subdomain"
 
 Gem::Specification.new do |s|
   s.name        = "rack-subdomain"
   s.authors     = ["Mattt Thompson", "Piotr Sarnacki"]
   s.email       = "m@mattt.me"
   s.homepage    = "http://github.com/mattt/rack-subdomain"
-  s.version     = Rack::Subdomain::VERSION
+  s.version     = '0.3.1'
   s.platform    = Gem::Platform::RUBY
   s.summary     = "rack-subdomain"
   s.description = "Rack middleware to route requests with subdomains to specified routes with substitutions"
 
   s.add_runtime_dependency "rack", ">= 1.2.0", "<= 2.0.0"
+
+  s.add_dependency "ipaddress", "~> 0.8.0"
 
   s.add_development_dependency "rspec"
   s.add_development_dependency "rake"

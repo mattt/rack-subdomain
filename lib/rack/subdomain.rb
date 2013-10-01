@@ -1,7 +1,7 @@
+require 'ipaddress'
+
 module Rack
   class Subdomain
-    VERSION = '0.3.0'
-
     def initialize(app, domain, options = {}, &block)
       # Maintain compatibility with previous rack-subdomain gem
       options = {to: options} if options.is_a? String
@@ -61,7 +61,7 @@ module Rack
     end
 
     def subdomain
-      @env['HTTP_HOST'].sub(/\.?#{domain}.*$/,'') unless @env['HTTP_HOST'].match(/^localhost/)
+      @env['HTTP_HOST'].sub(/\.?#{domain}.*$/,'') unless @env['HTTP_HOST'].match(/^localhost/) or IPAddress.valid?(@env['SERVER_NAME'])
     end
 
     def remap_with_substituted_path!(path)
