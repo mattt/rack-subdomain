@@ -22,7 +22,7 @@ module Rack
       @env = env
       @subdomain = subdomain
 
-      if constraint(@subdomain, @options)
+      if @subdomain && domain_match? && constraint_match?(@subdomain, @options)
         pattern, route = @mappings.detect do |pattern, route|
           pattern === subdomain
         end
@@ -46,7 +46,7 @@ module Rack
 
   private
 
-    def domain
+    def eval_domain
       case @domain
       when Proc
         @domain.call(@env['HTTP_HOST'])
@@ -58,16 +58,15 @@ module Rack
     end
 
     def subdomain
-      @env['HTTP_HOST'].sub(/\.?#{domain}.*$/,'') unless @env['HTTP_HOST'].match(/^localhost/) or IPAddress.valid?(@env['SERVER_NAME'])
+      @env['HTTP_HOST'].sub(/\.?#{eval_domain}.*$/,'') unless @env['HTTP_HOST'].match(/^localhost/) or IPAddress.valid?(@env['SERVER_NAME'])
     end
 
     def remap_with_substituted_path!(path)
       scheme = @env["rack.url_scheme"]
-      host = "#{@subdomain}.#{domain}"
+      host = "#{@subdomain}.#{eval_domain}"
       port = ":#{@env['SERVER_PORT']}" unless @env['SERVER_PORT'] == '80'
       path = @env["PATH_INFO"] = ::File.join(path, @env["PATH_INFO"])
       query_string = "?" + @env["QUERY_STRING"] unless @env["QUERY_STRING"].empty?
-
       @env["REQUEST_URI"] = "#{scheme}://#{host}#{port}#{path}#{query_string}"
     end
 
@@ -79,10 +78,15 @@ module Rack
       options
     end
 
-    def constraint(subdomain, options)
-      if !subdomain || subdomain.empty?
-        false
-      elsif options[:only]
+    def domain_match?
+      case @domain
+      when String then !/#{@domain}/.match(@env['HTTP_HOST']).nil?
+      else !!eval_domain
+      end
+    end
+
+    def constraint_match?(subdomain, options)
+      if options[:only]
         options[:only].include?(subdomain)
       else
         !options[:except].include?(subdomain)

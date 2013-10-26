@@ -7,40 +7,34 @@ describe Rack::Subdomain do
   let(:options){ {to: 'foo'} }
   subject{ Rack::Subdomain.new(app, domain, options) }
 
-  describe '#constraint' do
-    context 'when subdomain is nil or empty' do
-      it 'should return false' do
-        subject.send(:constraint, nil, {}).should be_false
-        subject.send(:constraint, '', {}).should be_false
-      end
-    end
+  describe '#constraint_match?' do
     context 'when :only option is specified' do
       context 'when subdomain is in the :only condition' do
         it 'should return true' do
-          subject.send(:constraint, 'foo', {only: %w(foo bar)}).should be_true
+          subject.send(:constraint_match?, 'foo', {only: %w(foo bar)}).should be_true
         end
         it 'should ignore the :except option' do
-          subject.send(:constraint, 'foo', {only: %w(foo bar), except: %w(foo)}).should be_true
+          subject.send(:constraint_match?, 'foo', {only: %w(foo bar), except: %w(foo)}).should be_true
         end
       end
       context 'when subdomain not in the :only condition' do
         it 'should return false' do
-          subject.send(:constraint, 'baz', {only: %w(foo bar)}).should be_false
+          subject.send(:constraint_match?, 'baz', {only: %w(foo bar)}).should be_false
         end
         it 'should ignore the :except option' do
-          subject.send(:constraint, 'baz', {only: %w(foo bar), except: %w(bing)}).should be_false
+          subject.send(:constraint_match?, 'baz', {only: %w(foo bar), except: %w(bing)}).should be_false
         end
       end
     end
     context 'when :except option is specified' do
       context 'when subdomain is in the :except condition' do
         it 'should return false' do
-          subject.send(:constraint, 'foo', {except: %w(foo bar)}).should be_false
+          subject.send(:constraint_match?, 'foo', {except: %w(foo bar)}).should be_false
         end
       end
       context 'when subdomain not in the :except condition' do
         it 'should return true' do
-          subject.send(:constraint, 'baz', {except: %w(foo bar)}).should be_true
+          subject.send(:constraint_match?, 'baz', {except: %w(foo bar)}).should be_true
         end
       end
     end

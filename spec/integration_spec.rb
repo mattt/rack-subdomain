@@ -14,7 +14,7 @@ describe App do
   end
 
   describe 'nested mapping with :except condition' do
-    specify 'j' do
+    specify do
       request('http://example2.com')
       last_response.body.should eq 'in root'
       last_response.ok?.should be_true
