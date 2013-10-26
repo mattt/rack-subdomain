@@ -1,5 +1,8 @@
 # rack-subdomain
 
+[![Build Status](https://secure.travis-ci.org/mattt/rack-subdomain.png?branch=master)](http://travis-ci.org/mattt/rack-subdomain)
+[![Code Climate](https://codeclimate.com/github/mattt/rack-subdomain.png)](https://codeclimate.com/github/mattt/rack-subdomain)
+
 Rack middleware to transparently route requests with a subdomain to a specified path with substitutions. 
 
 ## Usage
