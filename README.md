@@ -1,5 +1,8 @@
 # rack-subdomain
 
+[![Build Status](https://secure.travis-ci.org/mattt/rack-subdomain.png?branch=master)](http://travis-ci.org/mattt/rack-subdomain)
+[![Code Climate](https://codeclimate.com/github/mattt/rack-subdomain.png)](https://codeclimate.com/github/mattt/rack-subdomain)
+
 Rack middleware to transparently route requests with a subdomain to a specified path with substitutions. 
 
 ## Usage
@@ -13,16 +16,17 @@ gem 'rack-subdomain'
 ### config.ru
 
 ``` ruby
-
-# Simple Example
-
+# Map all subdomains
 use Rack::Subdomain, "example.com", to: "/users/:subdomain"
 
-# Complex Example
+# Nested mapping with :except condition
 use Rack::Subdomain, "example.com", except: ['', 'www', 'secure'] do
-  map 'downloads', to: "/downloads/:subdomain"
+  map 'downloads', to: "/downloads"
   map '*', to: "/users/:subdomain"
 end
+
+# :to mapping with :only condition
+use Rack::Subdomain, "example.com", only: ['', 'www'], to: '/nested'
 ```
 
 ## Contact
