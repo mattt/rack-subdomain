@@ -47,5 +47,28 @@ describe App do
       last_response.body.should eq 'in nested'
       last_response.ok?.should be_true
     end
+    specify do
+      request('http://foo.example3.com')
+      last_response.body.should eq 'in root'
+      last_response.ok?.should be_true
+    end
+  end
+
+  describe 'non-mapped domain' do
+    specify do
+      request('http://www.not-mapped.com')
+      last_response.body.should eq 'in root'
+      last_response.ok?.should be_true
+    end
+    specify do
+      request('http://not-mapped.com')
+      last_response.body.should eq 'in root'
+      last_response.ok?.should be_true
+    end
+    specify do
+      request('http://foo.not-mapped.com')
+      last_response.body.should eq 'in root'
+      last_response.ok?.should be_true
+    end
   end
 end

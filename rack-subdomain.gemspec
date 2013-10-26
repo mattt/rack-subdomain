@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.authors     = ["Mattt Thompson", "Piotr Sarnacki"]
   s.email       = "m@mattt.me"
   s.homepage    = "http://github.com/mattt/rack-subdomain"
-  s.version     = '0.3.1'
+  s.version     = '0.4.0'
   s.platform    = Gem::Platform::RUBY
   s.summary     = "rack-subdomain"
   s.description = "Rack middleware to route requests with subdomains to specified routes with substitutions"

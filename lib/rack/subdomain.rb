@@ -22,6 +22,7 @@ module Rack
       @env = env
       @subdomain = subdomain
 
+      # NOTE: it is OK if @subdomain is an empty string here (as that is the no subdomain case)
       if @subdomain && domain_match? && constraint_match?(@subdomain, @options)
         pattern, route = @mappings.detect do |pattern, route|
           pattern === subdomain
@@ -63,6 +64,7 @@ module Rack
 
     def remap_with_substituted_path!(path)
       scheme = @env["rack.url_scheme"]
+      # next two lines are dangerous as they can potentially mutate host and port?
       host = "#{@subdomain}.#{eval_domain}"
       port = ":#{@env['SERVER_PORT']}" unless @env['SERVER_PORT'] == '80'
       path = @env["PATH_INFO"] = ::File.join(path, @env["PATH_INFO"])
@@ -80,7 +82,7 @@ module Rack
 
     def domain_match?
       case @domain
-      when String then !/#{@domain}/.match(@env['HTTP_HOST']).nil?
+      when String then !/#{@domain}$/.match(@env['HTTP_HOST']).nil?
       else !!eval_domain
       end
     end
