@@ -3,11 +3,8 @@ require 'ipaddress'
 module Rack
   class Subdomain
     def initialize(app, domain, options = {}, &block)
-      # Maintain compatibility with previous rack-subdomain gem
-      options = {to: options} if options.is_a? String
 
-      @options = {except: ['', 'www']}.merge(options)
-
+      @options = prepare_options(options)
       @app = app
       @domain = domain
       @mappings = {}
@@ -25,7 +22,7 @@ module Rack
       @env = env
       @subdomain = subdomain
 
-      if @subdomain && !@subdomain.empty? && !@options[:except].include?(@subdomain)
+      if constraint(@subdomain, @options)
         pattern, route = @mappings.detect do |pattern, route|
           pattern === subdomain
         end
@@ -72,6 +69,24 @@ module Rack
       query_string = "?" + @env["QUERY_STRING"] unless @env["QUERY_STRING"].empty?
 
       @env["REQUEST_URI"] = "#{scheme}://#{host}#{port}#{path}#{query_string}"
+    end
+
+    def prepare_options(options)
+      options = {to: options} if options.is_a?(String) # backwards compatibility
+      options = {except: ['', 'www']}.merge(options)
+      options[:except] = Array(options[:except])
+      options[:only]   = Array(options[:only]) if options[:only]
+      options
+    end
+
+    def constraint(subdomain, options)
+      if !subdomain || subdomain.empty?
+        false
+      elsif options[:only]
+        options[:only].include?(subdomain)
+      else
+        !options[:except].include?(subdomain)
+      end
     end
   end
 end

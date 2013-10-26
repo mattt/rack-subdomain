@@ -13,16 +13,17 @@ gem 'rack-subdomain'
 ### config.ru
 
 ``` ruby
-
-# Simple Example
-
+# Map all subdomains
 use Rack::Subdomain, "example.com", to: "/users/:subdomain"
 
-# Complex Example
+# Nested mapping with :except condition
 use Rack::Subdomain, "example.com", except: ['', 'www', 'secure'] do
-  map 'downloads', to: "/downloads/:subdomain"
+  map 'downloads', to: "/downloads"
   map '*', to: "/users/:subdomain"
 end
+
+# :to mapping with :only condition
+use Rack::Subdomain, "example.com", only: ['', 'www'], to: '/nested'
 ```
 
 ## Contact
