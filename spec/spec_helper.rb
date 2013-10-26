@@ -1,8 +1,11 @@
-# gem 'minitest'
-# require 'minitest/spec'
-# require 'minitest/autorun'
+require 'rack'
+require 'rack/test'
+require 'rspec'
 
 $:.push File.expand_path('../../lib', __FILE__)
 require 'rack_subdomain'
+require 'dummy/app'
 
-require 'rspec'
+RSpec.configure do |config|
+  config.include Rack::Test::Methods
+end

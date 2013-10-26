@@ -2,9 +2,10 @@ require 'spec_helper'
 
 describe Rack::Subdomain do
 
+  let(:app){ App.new }
   let(:domain){ 'example.com' }
   let(:options){ {to: 'foo'} }
-  subject{ Rack::Subdomain.new('my_app', domain, options) }
+  subject{ Rack::Subdomain.new(app, domain, options) }
 
   describe '#constraint' do
     context 'when subdomain is nil or empty' do
