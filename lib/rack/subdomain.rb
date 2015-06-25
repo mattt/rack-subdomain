@@ -61,6 +61,10 @@ module Rack
     end
 
     def subdomain
+      # Support HTTP/1.0 clients, because OpenShift's scalable app
+      # monitoring service uses HTTP/1.0.
+      return nil if @env['HTTP_HOST'].nil?
+
       @env['HTTP_HOST'].sub(/\.?#{domain}.*$/,'') unless @env['HTTP_HOST'].match(/^localhost/) or IPAddress.valid?(@env['SERVER_NAME'])
     end
 
