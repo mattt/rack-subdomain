@@ -1,19 +1,19 @@
 # rack-subdomain
 
-Rack middleware to transparently route requests with a subdomain to a specified path with substitutions. 
+Rack middleware to transparently route requests with a subdomain
+to a specified path with substitutions.
 
 ## Usage
 
 ### Gemfile
 
-``` ruby
+```ruby
 gem 'rack-subdomain'
 ```
 
 ### config.ru
 
-``` ruby
-
+```ruby
 # Simple Example
 
 use Rack::Subdomain, "example.com", to: "/users/:subdomain"
@@ -27,12 +27,9 @@ end
 
 ## Contact
 
-Mattt Thompson
-
-- http://github.com/mattt
-- http://twitter.com/mattt
-- m@mattt.me
+[Mattt](https://twitter.com/mattt)
 
 ## License
 
-rack-subdomain is available under the MIT license. See the LICENSE file for more info.
+rack-subdomain is available under the MIT license.
+See the LICENSE file for more info.
