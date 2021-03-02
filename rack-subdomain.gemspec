@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.summary     = "rack-subdomain"
   s.description = "Rack middleware to route requests with subdomains to specified routes with substitutions"
 
-  s.add_runtime_dependency "rack", "~> 1.2", "< 2.0.0"
+  s.add_runtime_dependency "rack", ">= 1.2"
 
   s.add_dependency "ipaddress", "~> 0.8.0"
 
