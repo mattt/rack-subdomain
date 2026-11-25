@@ -22,16 +22,15 @@ module Rack
     end
 
     def call(env)
-      @env = env
-      @subdomain = subdomain
+      subdomain = subdomain_for(env)
 
-      if @subdomain && !@subdomain.empty? && !@options[:except].include?(@subdomain)
+      if subdomain && !subdomain.empty? && !@options[:except].include?(subdomain)
         pattern, route = @mappings.detect do |pattern, route|
-          pattern === subdomain
+          pattern === subdomain_for(env)
         end
 
         if route
-          remap_with_substituted_path!(route.gsub(/\:subdomain/, @subdomain))
+          remap_with_substituted_path!(env, subdomain, route.gsub(/\:subdomain/, subdomain))
         end
       end
 
@@ -49,29 +48,32 @@ module Rack
 
   private
 
-    def domain
+    def domain(env)
       case @domain
       when Proc
-        @domain.call(@env['HTTP_HOST'])
+        @domain.call(env['HTTP_HOST'])
       when Regexp
-        @domain.match(@env['HTTP_HOST'])
+        @domain.match(env['HTTP_HOST'])
       else
         @domain
       end
     end
 
-    def subdomain
-      @env['HTTP_HOST'].sub(/\.?#{domain}.*$/,'') unless @env['HTTP_HOST'].nil? || @env['HTTP_HOST'].match(/^localhost/) || IPAddress.valid?(@env['SERVER_NAME'])
+    def subdomain_for(env)
+      host = env['HTTP_HOST']
+      return if host.nil? || host.match(/^localhost/) || IPAddress.valid?(env['SERVER_NAME'])
+
+      host.sub(/\.?#{domain(env)}.*$/,'')
     end
 
-    def remap_with_substituted_path!(path)
-      scheme = @env["rack.url_scheme"]
-      host = "#{@subdomain}.#{domain}"
-      port = ":#{@env['SERVER_PORT']}" unless @env['SERVER_PORT'] == '80'
-      path = @env["PATH_INFO"] = ::File.join(path, @env["PATH_INFO"])
-      query_string = "?" + @env["QUERY_STRING"] unless @env["QUERY_STRING"].empty?
+    def remap_with_substituted_path!(env, subdomain, path)
+      scheme = env["rack.url_scheme"]
+      host = "#{subdomain}.#{domain(env)}"
+      port = ":#{env['SERVER_PORT']}" unless env['SERVER_PORT'] == '80'
+      path = env["PATH_INFO"] = ::File.join(path, env["PATH_INFO"])
+      query_string = "?" + env["QUERY_STRING"] unless env["QUERY_STRING"].empty?
 
-      @env["REQUEST_URI"] = "#{scheme}://#{host}#{port}#{path}#{query_string}"
+      env["REQUEST_URI"] = "#{scheme}://#{host}#{port}#{path}#{query_string}"
     end
   end
 end
